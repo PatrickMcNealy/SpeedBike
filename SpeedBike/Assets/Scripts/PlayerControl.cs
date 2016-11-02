@@ -8,33 +8,131 @@ public class PlayerControl : MonoBehaviour {
     Rigidbody rb;
     int lane = 0;
 
+    bool heldUp = false;
+    bool heldDown = false;
+    bool heldSpace = false;
+
+    float currentZPos = 7.5f;
+
+    bool grounded = true;
+
+    bool alive = true;
+
     void Start()
     {
          rb = GetComponent<Rigidbody>();
     }
 
+
+
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKey("right"))
+
+        //PHYSICS HERE
+
+        if (grounded)
         {
-            this.accelerate();
+            transform.position = new Vector3(transform.position.x, 4, transform.position.z);
         }
-        else if (Input.GetKey("left"))
+        else
         {
-            this.brake();
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y - 1.2f, rb.velocity.z);
+            if (transform.position.y <= 4)
+            {
+                grounded = true;
+            }
         }
 
-        if (Input.GetKey("up"))
-        {
-            shift(-1);
-        }
 
-        if (Input.GetKey("down"))
+        if (alive)
         {
-            shift(1);
+            if (Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift))
+            {
+                this.accelerate();
+            }
+            else if (Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl))
+            {
+                this.brake();
+            }
+
+            if (Input.GetKey("up"))
+            {
+                if (!heldUp)
+                {
+                    shift(-1);
+                    heldUp = true;
+                }
+            }
+            else { heldUp = false; }
+
+
+            if (Input.GetKey("down"))
+            {
+                if (!heldDown)
+                {
+                    shift(1);
+                    heldDown = true;
+                }
+            }
+            else
+            {
+                heldDown = false;
+            }
+
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                rotate(-0.1f);
+            }
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                rotate(0.1f);
+            }
+
+
+            //JUMP
+            if (Input.GetKey(KeyCode.Space))
+            {
+                if (!heldSpace)
+                {
+
+                    heldSpace = true;
+                    if (grounded)
+                    {
+                        grounded = false;
+                        rb.velocity = new Vector3(rb.velocity.x, 30, rb.velocity.z);
+                    }
+                }
+            }
+            else
+            {
+                heldSpace = false;
+            }
         }
+        
+
+
+
+
+        //FORCE Z AXIS POSITION
+        rb.position = new Vector3(rb.position.x, rb.position.y, currentZPos);
+
+
+        
+
     }
+
+    public void ramp()
+    {
+        grounded = false;
+        rb.velocity = new Vector3(rb.velocity.x, 50, rb.velocity.z);
+    }
+    public void kill()
+    {
+        rb.velocity = new Vector3(0,rb.velocity.y,rb.velocity.z);
+        alive = false;
+    }
+
 
     private void brake()
     {
@@ -46,7 +144,9 @@ public class PlayerControl : MonoBehaviour {
 
     private void accelerate()
     {
-        rb.velocity = new Vector3(rb.velocity.x + 1, rb.velocity.y, rb.velocity.z);
+        float speedChange = (100f - rb.velocity.x) / 20f; 
+
+        rb.velocity = new Vector3(rb.velocity.x + speedChange, rb.velocity.y, rb.velocity.z);
     }
 
     private void shift(int i)
@@ -66,19 +166,23 @@ public class PlayerControl : MonoBehaviour {
         switch (lane)
         {
             case 0:
-                rb.position = new Vector3(rb.position.x, rb.position.y, 7.5f);
+                currentZPos = 7.5f;
                 break;
             case 1:
-                rb.position = new Vector3(rb.position.x, rb.position.y, 2.5f);
+                currentZPos = 2.5f;
                 break;
             case 2:
-                rb.position = new Vector3(rb.position.x, rb.position.y, -2.5f);
+                currentZPos = -2.5f;
                 break;
             case 3:
-                rb.position = new Vector3(rb.position.x, rb.position.y, -7.5f);
+                currentZPos = -7.5f;
                 break;
         }
-
-        rb.constraints = RigidbodyConstraints.FreezePositionZ;
     }
+
+    private void rotate(float spin)
+    {
+        rb.angularVelocity = new Vector3(rb.angularVelocity.x, rb.angularVelocity.y, rb.angularVelocity.z + spin);
+    }
+
 }
