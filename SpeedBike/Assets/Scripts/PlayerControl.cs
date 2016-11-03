@@ -4,6 +4,9 @@ using System;
 
 public class PlayerControl : MonoBehaviour {
 
+    const float GRAVITY = -2f;
+    float velocityGoal = 10f;
+
     // Use this for initialization
     Rigidbody rb;
     int lane = 0;
@@ -13,6 +16,7 @@ public class PlayerControl : MonoBehaviour {
     bool heldSpace = false;
 
     float currentZPos = 7.5f;
+    float endZPos = 7.5f;
 
     bool grounded = true;
 
@@ -28,17 +32,28 @@ public class PlayerControl : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        float tempDiff = endZPos - currentZPos;
+        tempDiff= tempDiff / 3f;
+        currentZPos = currentZPos + tempDiff;
+
 
         //PHYSICS HERE
 
         if (grounded)
         {
-            transform.position = new Vector3(transform.position.x, 4, transform.position.z);
+            transform.position = new Vector3(transform.position.x, 3.2f, transform.position.z);
+            rb.rotation = new Quaternion(0, 0, 0, 1f);
+            rb.angularVelocity = new Vector3(0, 0, 0);
         }
         else
         {
-            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y - 1.2f, rb.velocity.z);
-            if (transform.position.y <= 4)
+            //GRAVITY
+            float testZ = rb.transform.rotation.eulerAngles.z;
+            float downForce = GRAVITY + (float)Math.Sin(2*(rb.transform.rotation.eulerAngles.z*Math.PI)/180f);
+
+            rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + downForce, rb.velocity.z);
+            
+            if (transform.position.y <= 3.15f)
             {
                 grounded = true;
             }
@@ -100,13 +115,25 @@ public class PlayerControl : MonoBehaviour {
                     if (grounded)
                     {
                         grounded = false;
-                        rb.velocity = new Vector3(rb.velocity.x, 30, rb.velocity.z);
+                        rb.velocity = new Vector3(rb.velocity.x, 40, rb.velocity.z);
                     }
                 }
             }
             else
             {
                 heldSpace = false;
+            }
+
+            if (grounded)
+            {
+                if (rb.velocity.x < velocityGoal)
+                {
+                    rb.velocity = new Vector3(rb.velocity.x + 0.1f, rb.velocity.y, rb.velocity.z);
+                }
+                else if (rb.velocity.x > velocityGoal)
+                {
+                    rb.velocity = new Vector3(rb.velocity.x - 0.1f, rb.velocity.y, rb.velocity.z);
+                }
             }
         }
         
@@ -122,31 +149,26 @@ public class PlayerControl : MonoBehaviour {
 
     }
 
-    public void ramp()
-    {
-        grounded = false;
-        rb.velocity = new Vector3(rb.velocity.x, 50, rb.velocity.z);
-    }
-    public void kill()
-    {
-        rb.velocity = new Vector3(0,rb.velocity.y,rb.velocity.z);
-        alive = false;
-    }
-
 
     private void brake()
     {
-        if (rb.velocity.x >= 1) //ALSO IF GROUNDED
+        if (rb.velocity.x >= 1)
         {
-            rb.velocity = new Vector3(rb.velocity.x - 2, rb.velocity.y, rb.velocity.z);
+            if (grounded)
+            {
+                rb.velocity = new Vector3(rb.velocity.x - 2, rb.velocity.y, rb.velocity.z);
+            }
         }
     }
 
     private void accelerate()
     {
-        float speedChange = (100f - rb.velocity.x) / 20f; 
+        if (grounded)
+        {
+            float speedChange = (100f - rb.velocity.x) / 20f;
 
-        rb.velocity = new Vector3(rb.velocity.x + speedChange, rb.velocity.y, rb.velocity.z);
+            rb.velocity = new Vector3(rb.velocity.x + speedChange, rb.velocity.y, rb.velocity.z);
+        }
     }
 
     private void shift(int i)
@@ -166,16 +188,16 @@ public class PlayerControl : MonoBehaviour {
         switch (lane)
         {
             case 0:
-                currentZPos = 7.5f;
+                endZPos = 7.5f;
                 break;
             case 1:
-                currentZPos = 2.5f;
+                endZPos = 2.5f;
                 break;
             case 2:
-                currentZPos = -2.5f;
+                endZPos = -2.5f;
                 break;
             case 3:
-                currentZPos = -7.5f;
+                endZPos = -7.5f;
                 break;
         }
     }
@@ -184,5 +206,26 @@ public class PlayerControl : MonoBehaviour {
     {
         rb.angularVelocity = new Vector3(rb.angularVelocity.x, rb.angularVelocity.y, rb.angularVelocity.z + spin);
     }
+
+
+    #region forgein calls
+    public void ramp(int launchAngle)
+    {
+        grounded = false;
+        rb.velocity = new Vector3(rb.velocity.x, 40, rb.velocity.z);
+        rb.rotation = Quaternion.Euler(0, 0, launchAngle);  //new Quaternion(0f, 0f, 0.25f, 0.968246f);
+        rb.angularVelocity = new Vector3(0, 0, -1f);
+    }
+    public void kill()
+    {
+        rb.velocity = new Vector3(0, rb.velocity.y, rb.velocity.z);
+        alive = false;
+    }
+    public void boost(float power)
+    {
+        rb.velocity = new Vector3(rb.velocity.x + power, rb.velocity.y, rb.velocity.z);
+    }
+    #endregion
+
 
 }
