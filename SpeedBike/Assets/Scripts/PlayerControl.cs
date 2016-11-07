@@ -127,17 +127,22 @@ public class PlayerControl : MonoBehaviour {
                 heldSpace = false;
             }
 
-            if (grounded)
+            if (rb.velocity.x < targetVelocity)
             {
-                if (rb.velocity.x < targetVelocity)
+                rb.velocity = new Vector3(rb.velocity.x + 0.5f, rb.velocity.y, rb.velocity.z);
+            }
+            else if (rb.velocity.x > targetVelocity)
+            {
+                if (grounded)
                 {
-                    rb.velocity = new Vector3(rb.velocity.x + 0.2f, rb.velocity.y, rb.velocity.z);
+                    rb.velocity = new Vector3(rb.velocity.x - 1f, rb.velocity.y, rb.velocity.z);
                 }
-                else if (rb.velocity.x > targetVelocity)
+                else
                 {
-                    rb.velocity = new Vector3(rb.velocity.x - 0.2f, rb.velocity.y, rb.velocity.z);
+                    rb.velocity = new Vector3(rb.velocity.x - 0.3f, rb.velocity.y, rb.velocity.z);
                 }
             }
+            
         }
         
 
