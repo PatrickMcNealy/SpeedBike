@@ -5,7 +5,7 @@ using System;
 public class PlayerControl : MonoBehaviour {
 
     const float GRAVITY = -2f;
-    float velocityGoal = 10f;
+    float targetVelocity = 40;
 
     // Use this for initialization
     Rigidbody rb;
@@ -32,28 +32,31 @@ public class PlayerControl : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        targetVelocity += 0.01f;
+
+        //SHIFT LANES
         float tempDiff = endZPos - currentZPos;
         tempDiff= tempDiff / 3f;
         currentZPos = currentZPos + tempDiff;
 
 
         //PHYSICS HERE
-
         if (grounded)
         {
             transform.position = new Vector3(transform.position.x, 3.2f, transform.position.z);
             rb.rotation = new Quaternion(0, 0, 0, 1f);
             rb.angularVelocity = new Vector3(0, 0, 0);
+            rb.velocity = new Vector3(rb.velocity.x, 0, 0);
+
         }
         else
         {
             //GRAVITY
             float testZ = rb.transform.rotation.eulerAngles.z;
             float downForce = GRAVITY + (float)Math.Sin(2*(rb.transform.rotation.eulerAngles.z*Math.PI)/180f);
-
             rb.velocity = new Vector3(rb.velocity.x, rb.velocity.y + downForce, rb.velocity.z);
             
-            if (transform.position.y <= 3.15f)
+            if (transform.position.y <= 3.1f && rb.velocity.y < 0)
             {
                 grounded = true;
             }
@@ -126,13 +129,13 @@ public class PlayerControl : MonoBehaviour {
 
             if (grounded)
             {
-                if (rb.velocity.x < velocityGoal)
+                if (rb.velocity.x < targetVelocity)
                 {
-                    rb.velocity = new Vector3(rb.velocity.x + 0.1f, rb.velocity.y, rb.velocity.z);
+                    rb.velocity = new Vector3(rb.velocity.x + 0.2f, rb.velocity.y, rb.velocity.z);
                 }
-                else if (rb.velocity.x > velocityGoal)
+                else if (rb.velocity.x > targetVelocity)
                 {
-                    rb.velocity = new Vector3(rb.velocity.x - 0.1f, rb.velocity.y, rb.velocity.z);
+                    rb.velocity = new Vector3(rb.velocity.x - 0.2f, rb.velocity.y, rb.velocity.z);
                 }
             }
         }
