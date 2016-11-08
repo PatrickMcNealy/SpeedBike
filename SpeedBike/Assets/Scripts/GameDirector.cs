@@ -13,19 +13,24 @@ public class GameDirector : MonoBehaviour {
 
     public GameObject bike;
     public GameObject text;
+    public GameObject textvel;
 
     public GameObject Prefab0;
     public GameObject RoadA1;
     public GameObject RoadA2;
 
     int trackEnd = 200;
-    
+
+    //Nick's variables for velocity, noted to find easily
+    private float velocity;
+    private string velocityText;
+
     public float bikePos { get; private set; }
 
 	// Use this for initialization
 	void Start () {
-	
-	}
+        
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -36,14 +41,24 @@ public class GameDirector : MonoBehaviour {
         {
             float distance = bikePos - prevX;
 
+            //gets bikes current velocity
+            velocity = bike.GetComponent<Rigidbody>().velocity.x;
+
             score += distance;
             score += distance * bike.GetComponent<Rigidbody>().velocity.x;
             
             prevX = bike.GetComponent<Transform>().position.x;
+
+
         }
 
         long tempScore = (long)score;
         text.GetComponent<Text>().text = tempScore.ToString();
+
+        //Multiple conversions to get ints and strings to play together and display current velocity
+        int velocityNum = (int)velocity;
+        velocityText = "MPH: " + velocityNum;
+        textvel.GetComponent<Text>().text = velocityText.ToString();
         #endregion
 
 
