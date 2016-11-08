@@ -34,15 +34,12 @@ public class GameDirector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        #region SCORE
+        #region SCORE+VELOCITY
         bikePos = bike.GetComponent<Transform>().position.x;
 
         if (bikePos > prevX)
         {
             float distance = bikePos - prevX;
-
-            //gets bikes current velocity
-            velocity = bike.GetComponent<Rigidbody>().velocity.x;
 
             score += distance;
             score += distance * bike.GetComponent<Rigidbody>().velocity.x;
@@ -50,6 +47,12 @@ public class GameDirector : MonoBehaviour {
             prevX = bike.GetComponent<Transform>().position.x;
 
 
+        }
+
+        if (velocity >= 0)
+        {
+            //gets bikes current velocity
+            velocity = bike.GetComponent<Rigidbody>().velocity.x;
         }
 
         long tempScore = (long)score;
