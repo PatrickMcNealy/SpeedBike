@@ -5,7 +5,7 @@ using System;
 public class PlayerControl : MonoBehaviour {
 
     const float GRAVITY = -2f;
-    float targetVelocity = 40;
+    public float targetVelocity { get; private set; } 
 
     // Use this for initialization
     Rigidbody rb;
@@ -25,6 +25,7 @@ public class PlayerControl : MonoBehaviour {
     void Start()
     {
          rb = GetComponent<Rigidbody>();
+        targetVelocity = 40;
     }
 
 
@@ -220,6 +221,7 @@ public class PlayerControl : MonoBehaviour {
     public void ramp(int launchAngle)
     {
         grounded = false;
+        rb.position = new Vector3(rb.position.x, rb.position.y + 2.5f, rb.position.z);
         rb.velocity = new Vector3(rb.velocity.x, 40, rb.velocity.z);
         rb.rotation = Quaternion.Euler(0, 0, launchAngle);  //new Quaternion(0f, 0f, 0.25f, 0.968246f);
         rb.angularVelocity = new Vector3(0, 0, -1f);

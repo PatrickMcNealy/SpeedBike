@@ -15,9 +15,10 @@ public class GameDirector : MonoBehaviour {
     public GameObject text;
     public GameObject textvel;
 
-    public GameObject Prefab0;
-    public GameObject RoadA1;
-    public GameObject RoadA2;
+    public GameObject[] SetA;
+    public GameObject[] SetB;
+
+    int set;
 
     int trackEnd = 200;
 
@@ -29,7 +30,7 @@ public class GameDirector : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        
+        set = 0;
     }
 	
 	// Update is called once per frame
@@ -66,22 +67,33 @@ public class GameDirector : MonoBehaviour {
 
 
         #region trackGeneration
+
+        if (set == 0)
+        {
+            if (bike.GetComponent<PlayerControl>().targetVelocity > 80)
+            {
+                set = 1;
+            }
+        }
+
         while (bikePos > trackEnd - 150)
         {
-            int track = Random.Range(0, 3);//Max rand value is EXCLUSIVE.
-            GameObject go = null;
-            switch (track)
+            GameObject[] currentSet = null;
+            switch (set)
             {
                 case 0:
-                    go = (GameObject)Instantiate(Prefab0);
+                    currentSet = SetA;
                     break;
                 case 1:
-                    go = (GameObject)Instantiate(RoadA1);
-                    break;
-                case 2:
-                    go = (GameObject)Instantiate(RoadA2);
+                    currentSet = SetB;
                     break;
             }
+
+            int track = Random.Range(0, currentSet.Length);//Max rand value is EXCLUSIVE.
+            GameObject go = (GameObject)Instantiate(currentSet[track]);
+
+
+
             go.GetComponent<Transform>().position = new Vector3(trackEnd, 0f, 0f);
             trackEnd += 100;
             go.GetComponent<RoadScript>().director = this;
