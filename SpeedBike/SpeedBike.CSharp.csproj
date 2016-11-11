@@ -67,6 +67,7 @@
     <Compile Include="Assets\Scripts\CameraScript.cs" />
     <Compile Include="Assets\Scripts\DeathWall.cs" />
     <Compile Include="Assets\Scripts\GameDirector.cs" />
+    <Compile Include="Assets\Scripts\Menu\PlayButton.cs" />
     <Compile Include="Assets\Scripts\PlayerControl.cs" />
     <Compile Include="Assets\Scripts\Ramp.cs" />
     <Compile Include="Assets\Scripts\RoadScript.cs" />
