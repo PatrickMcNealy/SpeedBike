@@ -63,14 +63,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Boost.cs" />
-    <Compile Include="Assets\Scripts\CameraScript.cs" />
-    <Compile Include="Assets\Scripts\DeathWall.cs" />
-    <Compile Include="Assets\Scripts\GameDirector.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Boost.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\CameraScript.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\DeathWall.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\GameDirector.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\PlayerControl.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\Ramp.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\RoadScript.cs" />
+    <Compile Include="Assets\Scripts\Gameplay\SlowPad.cs" />
     <Compile Include="Assets\Scripts\Menu\PlayButton.cs" />
-    <Compile Include="Assets\Scripts\PlayerControl.cs" />
-    <Compile Include="Assets\Scripts\Ramp.cs" />
-    <Compile Include="Assets\Scripts\RoadScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

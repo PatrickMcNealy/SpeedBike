@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 public class GameDirector : MonoBehaviour {
 
+    public GameObject restartButton;
+    public GameObject submitButton;
+
     Random rand = new Random();
 
     float score = 0;
@@ -35,6 +38,13 @@ public class GameDirector : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (!bike.GetComponent<PlayerControl>().alive)
+        {
+            restartButton.active = true;
+            submitButton.active = true;
+        }
+
         #region SCORE+VELOCITY
         bikePos = bike.GetComponent<Transform>().position.x;
 
@@ -61,7 +71,7 @@ public class GameDirector : MonoBehaviour {
 
         //Multiple conversions to get ints and strings to play together and display current velocity
         int velocityNum = (int)velocity;
-        velocityText = "MPH: " + velocityNum;
+        velocityText =  velocityNum + " MPH";
         textvel.GetComponent<Text>().text = velocityText.ToString();
         #endregion
 

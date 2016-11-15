@@ -20,10 +20,11 @@ public class PlayerControl : MonoBehaviour {
 
     bool grounded = true;
 
-    bool alive = true;
+    public bool alive { get; private set; }
 
     void Start()
     {
+        alive = true;
          rb = GetComponent<Rigidbody>();
         targetVelocity = 40;
     }
@@ -234,6 +235,11 @@ public class PlayerControl : MonoBehaviour {
     public void boost(float power)
     {
         rb.velocity = new Vector3(rb.velocity.x + power, rb.velocity.y, rb.velocity.z);
+    }
+
+    public void slow(float power)
+    {
+        rb.velocity = new Vector3(rb.velocity.x - power, rb.velocity.y, rb.velocity.z);
     }
     #endregion
 
