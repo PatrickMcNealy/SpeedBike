@@ -7,6 +7,7 @@ public class GameDirector : MonoBehaviour {
 
     public GameObject restartButton;
     public GameObject submitButton;
+    public GameObject leaderboardsButon;
 
     Random rand = new Random();
 
@@ -18,12 +19,15 @@ public class GameDirector : MonoBehaviour {
     public GameObject text;
     public GameObject textvel;
 
+
+    public GameObject blankRoad;
     public GameObject[] SetA;
     public GameObject[] SetB;
 
     int set;
 
     int trackEnd = 200;
+    int blankSpace = 1;
 
     //Nick's variables for velocity, noted to find easily
     private float velocity;
@@ -41,8 +45,9 @@ public class GameDirector : MonoBehaviour {
 
         if (!bike.GetComponent<PlayerControl>().alive)
         {
-            restartButton.active = true;
-            submitButton.active = true;
+            restartButton.SetActive(true);
+            submitButton.SetActive(true);
+            leaderboardsButon.SetActive(true);
         }
 
         #region SCORE+VELOCITY
@@ -80,9 +85,10 @@ public class GameDirector : MonoBehaviour {
 
         if (set == 0)
         {
-            if (bike.GetComponent<PlayerControl>().targetVelocity > 80)
+            if (bike.GetComponent<PlayerControl>().targetVelocity > 70)
             {
                 set = 1;
+                blankSpace = 1;
             }
         }
 
@@ -107,7 +113,18 @@ public class GameDirector : MonoBehaviour {
             go.GetComponent<Transform>().position = new Vector3(trackEnd, 0f, 0f);
             trackEnd += 100;
             go.GetComponent<RoadScript>().director = this;
+
+
+            for (int i = 0; i < blankSpace; i++)
+            {
+                GameObject road = (GameObject)Instantiate(blankRoad);
+                road.GetComponent<Transform>().position = new Vector3(trackEnd, 0f, 0f);
+                trackEnd += 100;
+                road.GetComponent<RoadScript>().director = this;
+            }
         }
+
+
         #endregion
     }
 }

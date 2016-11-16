@@ -26,7 +26,7 @@ public class PlayerControl : MonoBehaviour {
     {
         alive = true;
          rb = GetComponent<Rigidbody>();
-        targetVelocity = 40;
+        targetVelocity = 50;
     }
 
 
@@ -34,7 +34,7 @@ public class PlayerControl : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        targetVelocity += 0.01f;
+        targetVelocity += 0.02f;
 
         //SHIFT LANES
         float tempDiff = endZPos - currentZPos;
