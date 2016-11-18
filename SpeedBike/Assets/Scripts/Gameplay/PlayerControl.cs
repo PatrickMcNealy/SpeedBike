@@ -22,8 +22,14 @@ public class PlayerControl : MonoBehaviour {
 
     public bool alive { get; private set; }
 
+    float minSwipeDistY;
+    private Vector2 topPos;
+    private Vector2 botPos;
+    int lastDirection = 0;
+
     void Start()
     {
+        minSwipeDistY = Screen.height / 10f;
         alive = true;
          rb = GetComponent<Rigidbody>();
         targetVelocity = 50;
@@ -34,6 +40,72 @@ public class PlayerControl : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        int swipeDirection = 0;
+        if (Input.touchCount > 0)
+        {
+            Touch touch = Input.touches[0];
+            
+            switch (touch.phase)
+            {
+                case TouchPhase.Began:
+                    lastDirection = 0;
+                    topPos = touch.position;
+                    botPos = touch.position;
+                    break;
+                case TouchPhase.Moved:
+                    float swipeDistUp = touch.position.y - botPos.y;
+                    float swipeDistDown = touch.position.y - topPos.y;
+
+                    if (swipeDistUp > 0)
+                    {
+                        topPos = touch.position;
+                        if (lastDirection != 1 && swipeDistUp > minSwipeDistY)
+                        {
+                            lastDirection = 1;
+                            swipeDirection = 1;
+                        }
+                        if(swipeDistUp > minSwipeDistY * 4f)
+                        {
+                            swipeDirection = 2;
+                        }
+                    }
+
+                    if (swipeDistDown < 0)
+                    {
+                        botPos = touch.position;
+                        if (lastDirection != -1 && swipeDistDown < -1 * minSwipeDistY)
+                        {
+                            lastDirection = -1;
+                            swipeDirection = -1;
+                        }
+                        if (swipeDistDown < minSwipeDistY * -4f)
+                        {
+                            swipeDirection = -2;
+                        }
+                    }
+
+                    //if (swipeDistVertical > minSwipeDistY)
+                    //{
+                    //    float swipeValue = Mathf.Sign(touch.position.y - startPos.y);
+
+                    //    if (swipeValue > 0)
+                    //    {
+
+                    //        
+                    //    }
+
+                    //    else if (swipeValue < 0)
+                    //    {
+                    //        lastDirection = -1;
+                    //        swipeDirection = -1;
+                    //    }
+                    //}
+                    break;
+            }
+        }
+
+
+
         targetVelocity += 0.02f;
 
         //SHIFT LANES
@@ -67,16 +139,7 @@ public class PlayerControl : MonoBehaviour {
 
         if (alive)
         {
-            if (Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift))
-            {
-                this.accelerate();
-            }
-            else if (Input.GetKey(KeyCode.RightControl) || Input.GetKey(KeyCode.LeftControl))
-            {
-                this.brake();
-            }
-
-            if (Input.GetKey("up"))
+            if (Input.GetKey("up") || swipeDirection == 1)
             {
                 if (!heldUp)
                 {
@@ -85,9 +148,8 @@ public class PlayerControl : MonoBehaviour {
                 }
             }
             else { heldUp = false; }
-
-
-            if (Input.GetKey("down"))
+            
+            if (Input.GetKey("down") || swipeDirection == -1)
             {
                 if (!heldDown)
                 {
@@ -99,6 +161,16 @@ public class PlayerControl : MonoBehaviour {
             {
                 heldDown = false;
             }
+
+            if(swipeDirection == 2)
+            {
+                shift(-3);
+            }
+            else if(swipeDirection == -2)
+            {
+                shift(3);
+            }
+
 
             if (Input.GetKey(KeyCode.RightArrow))
             {
