@@ -40,6 +40,11 @@ public class PlayerControl : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+        if(rb.velocity.x < 10f && alive)
+        {
+            rb.velocity = new Vector3(10f, rb.velocity.y, rb.velocity.z);
+        }
+
         int swipeDirection = 0;
         if (Input.touchCount > 0)
         {
